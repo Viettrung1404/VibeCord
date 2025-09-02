@@ -1,15 +1,10 @@
 import { type Metadata } from 'next'
-import {
-  ClerkProvider,
-  SignInButton,
-  SignUpButton,
-  SignedIn,
-  SignedOut,
-  UserButton,
-} from '@clerk/nextjs'
+import { ClerkProvider, SignInButton, SignUpButton, SignedIn, SignedOut, UserButton } from '@clerk/nextjs'
 import { Geist, Geist_Mono } from 'next/font/google'
 import './globals.css'
 import { ThemeProvider } from '@/components/providers/theme-provider'
+import { ModeToggle } from '@/components/mode-toggle'
+import { cn } from '@/lib/utils'
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -33,13 +28,19 @@ export default function RootLayout({
 }>) {
   return (
     <ClerkProvider>
-      <html lang="en">
-        <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+      <html lang="en" suppressHydrationWarning>
+        {/* `${geistSans.variable} ${geistMono.variable} antialiased` */}
+        <body className={cn(
+          'antialiased', 
+          geistSans.variable, 
+          geistMono.variable,
+          'bg-white dark:bg-[#313338]'
+          )}>
           <ThemeProvider
             attribute="class"
-            defaultTheme="system"
-            enableSystem
-            disableTransitionOnChange
+            defaultTheme="dark"
+            enableSystem={false}
+            storageKey="discord-theme"
           >
             <header className="flex justify-end items-center p-4 gap-4 h-16">
               <SignedOut>
@@ -53,6 +54,7 @@ export default function RootLayout({
               <SignedIn>
                 <UserButton />
               </SignedIn>
+              <ModeToggle />
             </header>
             {children}
           </ThemeProvider>
